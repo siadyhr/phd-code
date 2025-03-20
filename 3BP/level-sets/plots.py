@@ -114,3 +114,33 @@ def pgrid_level_sets():
                 levels=np.linspace(-2, 0, 20)
             )
             axs[i,j].set_title("$q = (%s, %s)$" % (Q1[i,j,0,0], Q2[i,j,0,0]))
+
+
+def side_view_q1p1():
+    N = 100
+    n_plots = 1
+    mu = 0.25
+    qmin = -2**0.5
+    qmax = -qmin
+    pmin = -2
+    pmax = 2
+
+    q1s = np.linspace(qmin, qmax, N)
+    #q2s = np.linspace(qmin, qmax, n_plots)
+    q2s = np.array([0])
+    p1s = np.linspace(pmin, pmax, N)
+    #p2s = np.linspace(pmin, pmax, N)
+    p2s = np.array([0])
+
+    print(q1s.shape, q2s.shape, p1s.shape, p2s.shape)
+    Q1, Q2, P1, P2 = np.meshgrid(q1s, q2s, p1s, p2s, indexing="ij")
+    H = Hamiltonian(Q1, Q2, P1, P2, mu=mu)
+
+    fig, ax = plt.subplots()
+    ax.contour(
+                Q1[:,0,:,0],
+                P1[:,0,:,0],
+                H[:,0,:,0],
+                levels=np.linspace(-2, 0, 20)
+            )
+
