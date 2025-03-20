@@ -21,44 +21,60 @@ def Hamiltonian(q1, q2, p1, p2, mu=0.5):
             V(q1, q2, mu=mu)
         )
 
-N = 100
-q1s = np.linspace(-np.sqrt(2), np.sqrt(2), N)
-q2s = np.linspace(-np.sqrt(2), np.sqrt(2), N)
-p1s = np.array([-0.2])
-p2s = np.array([0])
+def test():
+    N = 100
+    q1s = np.linspace(-np.sqrt(2), np.sqrt(2), N)
+    q2s = np.linspace(-np.sqrt(2), np.sqrt(2), N)
+    p1s = np.array([-0.2])
+    p2s = np.array([0])
 
-Q1, Q2, P1, P2 = np.meshgrid(q1s, q2s, p1s, p2s)
-print(Q1.shape)
+    Q1, Q2, P1, P2 = np.meshgrid(q1s, q2s, p1s, p2s)
+    print(Q1.shape)
 
-H = Hamiltonian(Q1, Q2, P1, P2, mu=0.25)
+    H = Hamiltonian(Q1, Q2, P1, P2, mu=0.25)
 
-fig, ax = plt.subplots()
-#ax.plot(qs[:,0], V(qs)) 
-print(np.min(H), np.max(H))
-ax.contour(Q1[:,:,0,0], Q2[:,:,0,0], H[:,:,0,0], levels=np.linspace(-5, 0, 50))
+    fig, ax = plt.subplots()
+    #ax.plot(qs[:,0], V(qs)) 
+    print(np.min(H), np.max(H))
+    ax.contour(Q1[:,:,0,0], Q2[:,:,0,0], H[:,:,0,0], levels=np.linspace(-5, 0, 50))
 
 # Idé 1: p-gitter af subplots med level sets
 # Idé 2: Level-set for fast energi, men tegn forskellige med forskellig p (eller mu!)
 
 # Idé 1
-N = 100
-n_plots = 3
-q1s = np.linspace(-np.sqrt(2), np.sqrt(2), N)
-q2s = np.linspace(-np.sqrt(2), np.sqrt(2), N)
-p1s = np.linspace(-1, 1, n_plots)
-p2s = np.linspace(-1, 1, n_plots)
 
-Q1, Q2, P1, P2 = np.meshgrid(q1s, q2s, p1s, p2s)
-H = Hamiltonian(Q1, Q2, P1, P2, mu=0.25)
+def qgrid_level_sets():
+    """Create a grid of
+    (q_1, q_2) plots showing
+    level sets of H for
+    different values of p
+    (the rows/cols of the
+    plots vary the p value)
+    """
+    N = 100
+    n_plots = 3
+    mu = 0.25
+    qmin = -2**0.5
+    qmax = -qmin
+    pmin = -1
+    pmax = 1
 
-fig, axs = plt.subplots(n_plots, n_plots)
-for i in range(n_plots):
-    for j in range(n_plots):
-        axs[i,j].contour(
-            Q1[:,:,i,j],
-            Q2[:,:,i,j],
-            H[:,:,i,j],
-            levels=np.linspace(-2, 0, 20)
-        )
+    q1s = np.linspace(qmin, qmax, N)
+    q2s = np.linspace(qmin, qmax, N)
+    p1s = np.linspace(pmin, pmax, n_plots)
+    p2s = np.linspace(pmin, pmax, n_plots)
 
-plt.show()
+    Q1, Q2, P1, P2 = np.meshgrid(q1s, q2s, p1s, p2s)
+    H = Hamiltonian(Q1, Q2, P1, P2, mu=mu)
+
+    fig, axs = plt.subplots(n_plots, n_plots)
+    fig.suptitle("Level sets of the Hamiltonian $H_{%s}$" % mu)
+    for i in range(n_plots):
+        for j in range(n_plots):
+            axs[i,j].contour(
+                Q1[:,:,i,j],
+                Q2[:,:,i,j],
+                H[:,:,i,j],
+                levels=np.linspace(-2, 0, 20)
+            )
+            axs[i,j].set_title("$p = (%s, %s)$" % (P1[0,0,i,j], P2[0,0,i,j]))

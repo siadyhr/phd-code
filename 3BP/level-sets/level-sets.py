@@ -3,5 +3,5 @@ import matplotlib.pyplot as plt
 
 import plots
 
-
-plots.test()
+plots.qgrid_level_sets()
+plt.show()
