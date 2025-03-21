@@ -3,5 +3,5 @@ import matplotlib.pyplot as plt
 
 import plots
 
-plots.qgrid_level_sets()
+plots.side_views_q1p1_p2_slices()
 plt.show()
