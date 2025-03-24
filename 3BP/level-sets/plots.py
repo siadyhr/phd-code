@@ -144,3 +144,36 @@ def side_view_q1p1():
                 levels=np.linspace(-2, 0, 20)
             )
 
+def side_views_q1p1_p2_slices():
+    N = 100
+    n_plots = 5
+    mu = 0.25
+    qmin = -2**0.5
+    qmax = -qmin
+    q2min = 0
+    q2max = 0.2
+    pmin = -2
+    pmax = 2
+
+    q1s = np.linspace(qmin, qmax, N)
+    q2s = np.linspace(q2min, q2max, int(n_plots**0.5)**2)
+    p1s = np.linspace(pmin, pmax, N)
+    #p2s = np.linspace(pmin, pmax, N)
+    p2s = np.array([0])
+
+    Q1, Q2, P1, P2 = np.meshgrid(q1s, q2s, p1s, p2s, indexing="ij")
+    H = Hamiltonian(Q1, Q2, P1, P2, mu=mu)
+
+    fig, axs = plt.subplots(*2*(int(n_plots**0.5), ), squeeze=True)
+    fig.suptitle("View in the $q_1$-$p_1$ plane of level sets of the Hamiltonian, with $p_2 = 0$ and various values of $q_2$")
+    for i, ax in enumerate(np.ravel(axs)):
+        ax.set_title("$q_2 = %s$" % Q2[0,i,0,0])
+        ax.set_xlabel("$q_1$")
+        ax.set_ylabel("$p_1$")
+        ax.contour(
+                    Q1[:,i,:,0],
+                    P1[:,i,:,0],
+                    H[:,i,:,0],
+                    levels=np.linspace(-2, 0, 20)
+                )
+
