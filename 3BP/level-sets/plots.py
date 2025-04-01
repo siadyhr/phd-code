@@ -12,6 +12,9 @@ def V(q1, q2, mu=0.5):
             )
         )
 
+def U(q1, q2, mu=0.5):
+    return V(q1, q2) - (q1**2 + q2**2)/2
+
 def Hamiltonian(q1, q2, p1, p2, mu=0.5):
     return (
             (p1**2 + p2**2)/2
