@@ -180,3 +180,32 @@ def side_views_q1p1_p2_slices():
                     levels=np.linspace(-2, 0, 20)
                 )
 
+def level_surfaces_q1p():
+    """Plot level surface
+    """
+    N = 300
+    mu = 0.3
+    E = -1.8
+    qmax = 2**0.5
+    qmin = -qmax
+    pmin = -2
+    pmax = 2
+    q1s = np.linspace(qmin, qmax, N)
+#    p1s = np.linspace(pmin, pmax, N)
+    thetas = np.linspace(0, 2*np.pi, N)
+
+    Q1, Theta = np.meshgrid(q1s, thetas, indexing="ij")
+    R = np.sqrt(2*(E-U(Q1, 0, mu=mu)))
+    P1 = 0 + R*np.cos(Theta)
+    P2 = Q1 + R*np.sin(Theta)
+#    P2 = -Q1 + np.sqrt(2*(E-U(Q1, 0, mu=mu) - (0 - P1)**2))
+#    P2neg = -Q1 - np.sqrt(2*(E-U(Q1, 0, mu=mu) - (0 - P1)**2))
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.set_zlim((-3, 3))
+    ax.plot_surface(Q1, P1, P2, alpha=0.75)
+    ax.set_xlabel("$q_1$")
+    ax.set_ylabel("$p_1$")
+    ax.set_zlabel("$p_2$")
+#    ax.plot_surface(Q1, P1, P2neg)
