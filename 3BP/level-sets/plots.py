@@ -220,3 +220,16 @@ def level_surfaces_q1p():
     ax.set_ylabel("$p_1$")
     ax.set_zlabel("$p_2$")
 #    ax.plot_surface(Q1, P1, P2neg)
+
+def V_level_sets():
+    fig, ax = plt.subplots()
+    q1s = np.linspace(-2, 2, 400)
+    q2s = np.linspace(-2, 2, 400)
+    Q1, Q2 = np.meshgrid(q1s, q2s)
+    c = 1.78
+    mu = 0.10
+    ax.scatter([-mu, 1-mu], [0, 0])
+    ax.contour(Q1, Q2, V(Q1, Q2, mu=mu), levels=[c], label="V = %s" % c, cmap="autumn")
+    ax.contour(Q1, Q2, U(Q1, Q2, mu=mu), levels=[c], label="V = %s" % c, cmap="spring")
+    ax.contour(Q1, Q2, V(Q1, Q2, mu=mu) - 0.5*dVqdq(Q1, Q2, mu=mu), levels=[-c-0.05, -c, -c+0.05], label="V-dV(qdq)/2", cmap="PRGn")
+    ax.contour(Q1, Q2, Q1, cmap="PRGn")
