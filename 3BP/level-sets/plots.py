@@ -13,7 +13,18 @@ def V(q1, q2, mu=0.5):
         )
 
 def U(q1, q2, mu=0.5):
-    return V(q1, q2) - (q1**2 + q2**2)/2
+    return V(q1, q2, mu=mu) + (q1**2 + q2**2)/2
+
+def dVqdq(q1, q2, mu):
+    return V(q1, q2) - (mu * (1-mu))*(
+            (q1 + mu)/(
+                    (q1 + mu)**2 + q2**2
+            )**(3/2) + (
+                -(q1 + mu - 1)/(
+                    (q1 + mu - 1)**2 + q2**2
+            )**(3/2)
+        )
+    )
 
 def Hamiltonian(q1, q2, p1, p2, mu=0.5):
     return (
