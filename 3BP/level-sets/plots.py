@@ -31,7 +31,7 @@ def Hamiltonian(q1, q2, p1, p2, mu=0.5):
             (p1**2 + p2**2)/2
             +
             q1*p2 - q2*p1
-            +
+            -
             V(q1, q2, mu=mu)
         )
 
