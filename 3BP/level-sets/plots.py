@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def V(q1, q2, mu=0.5):
-    return -(
-            mu/np.sqrt(
+    return (
+            (1-mu)/np.sqrt(
                 (q1 + mu)**2 + q2**2
             )
             +
-            (1-mu)/np.sqrt(
+            mu/np.sqrt(
                 (q1 + mu - 1)**2 + q2**2
             )
         )
