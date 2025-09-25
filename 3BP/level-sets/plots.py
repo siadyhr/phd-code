@@ -2,25 +2,36 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def V(q1, q2, mu=0.5):
-    return -(
-            mu/np.sqrt(
+    return (
+            (1-mu)/np.sqrt(
                 (q1 + mu)**2 + q2**2
             )
             +
-            (1-mu)/np.sqrt(
+            mu/np.sqrt(
                 (q1 + mu - 1)**2 + q2**2
             )
         )
 
 def U(q1, q2, mu=0.5):
-    return V(q1, q2) - (q1**2 + q2**2)/2
+    return V(q1, q2, mu=mu) + (q1**2 + q2**2)/2
+
+def dVqdq(q1, q2, mu):
+    return V(q1, q2) - (mu * (1-mu))*(
+            (q1 + mu)/(
+                    (q1 + mu)**2 + q2**2
+            )**(3/2) + (
+                -(q1 + mu - 1)/(
+                    (q1 + mu - 1)**2 + q2**2
+            )**(3/2)
+        )
+    )
 
 def Hamiltonian(q1, q2, p1, p2, mu=0.5):
     return (
             (p1**2 + p2**2)/2
             +
             q1*p2 - q2*p1
-            +
+            -
             V(q1, q2, mu=mu)
         )
 
@@ -209,3 +220,16 @@ def level_surfaces_q1p():
     ax.set_ylabel("$p_1$")
     ax.set_zlabel("$p_2$")
 #    ax.plot_surface(Q1, P1, P2neg)
+
+def V_level_sets():
+    fig, ax = plt.subplots()
+    q1s = np.linspace(-2, 2, 400)
+    q2s = np.linspace(-2, 2, 400)
+    Q1, Q2 = np.meshgrid(q1s, q2s)
+    c = 1.78
+    mu = 0.10
+    ax.scatter([-mu, 1-mu], [0, 0])
+    ax.contour(Q1, Q2, V(Q1, Q2, mu=mu), levels=[c], label="V = %s" % c, cmap="autumn")
+    ax.contour(Q1, Q2, U(Q1, Q2, mu=mu), levels=[c], label="V = %s" % c, cmap="spring")
+    ax.contour(Q1, Q2, V(Q1, Q2, mu=mu) - 0.5*dVqdq(Q1, Q2, mu=mu), levels=[-c-0.05, -c, -c+0.05], label="V-dV(qdq)/2", cmap="PRGn")
+    ax.contour(Q1, Q2, Q1, cmap="PRGn")
