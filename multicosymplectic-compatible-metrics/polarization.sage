@@ -3,7 +3,15 @@ def Reeb_field(alpha, beta):
     R = matrix(R).T # to get R as column
     R /= (alpha * R)
     return R
+
+def is_compatible(alpha, beta, g):
+    assert (beta + beta.T == 0), "beta is not antisymmetric"
+    assert (beta.kernel().dimension() == 1), "dim(ker beta) ≠ 1"
     phi_candidate = g^(-1) * beta
+    R = Reeb_field(alpha, beta)
+#    print("φ² = ")
+#    print(phi_candidate**2)
+#    print("|R|^2 =",(R.T * g * R)[0,0])
     return (
             (
                 phi_candidate**2
