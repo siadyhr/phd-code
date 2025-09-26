@@ -38,3 +38,14 @@ def inverse_square_root(A):
     )
     return (1/V) * Dsqrt * V
 
+def polarize(alpha, beta, g0):
+    """
+    Mathematical procedure:
+        beta = g0(-, A -)
+    """
+
+    A = g0^(-1) * beta
+    J = (inverse_square_root(A * A.T)) * A
+    g = J.T * beta + alpha.T * alpha
+    return g
+
