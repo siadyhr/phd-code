@@ -30,3 +30,11 @@ def diagonalize(A):
     V = matrix(eigenvectors)
     return (D, V)
 
+def inverse_square_root(A):
+    D, V = diagonalize(A)
+    Dsqrt = diagonal_matrix(
+            x**(-1/2) if x != 0 else 0
+            for x in D.diagonal()
+    )
+    return (1/V) * Dsqrt * V
+
