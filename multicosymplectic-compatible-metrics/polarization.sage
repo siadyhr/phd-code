@@ -1,3 +1,26 @@
+# Standard form
+# alpha = dx^5
+# kerne er <d/dx^1, ..., d/dx^4>
+beta1 = matrix([
+    [ 0, 1, 0, 0, 0], 
+    [-1, 0, 0, 0, 0], 
+    [ 0, 0, 0, 1, 0], 
+    [ 0, 0,-1, 0, 0], 
+    [ 0, 0, 0, 0, 0]
+])
+alpha1 = matrix([0,0,0,0,1])
+
+beta2 = matrix([
+    [ 0, 0, 0, 0, 0],
+    [ 0, 0, 1, 0, 0],
+    [ 0,-1, 0, 0, 0],
+    [ 0, 0, 0, 0, 1],
+    [ 0, 0, 0,-1, 0],
+])
+alpha2 = matrix([1,1,0,0,0])
+
+G0 = diagonal_matrix([2,1,1,1,1])
+
 def Reeb_field(alpha, beta):
     R = beta.kernel().basis()[0]    # is vector
     R = matrix(R).T # to get R as column
@@ -62,3 +85,24 @@ def print_structure(alpha, beta):
     print("β =")
     print(beta)
     print("R = %s" % Reeb_field(alpha, beta).T)
+
+print("Structure 1")
+print_structure(alpha1, beta1)
+print("Structure 2")
+print_structure(alpha2, beta2)
+
+print("is α_i(R_j) = δ_ij?")
+print(alpha2 * Reeb_field(alpha1, beta1))
+print(alpha1 * Reeb_field(alpha2, beta2))
+
+print("Is G₀ compatible with (α₁, β₁)?", is_compatible(alpha1, beta1, G0))
+G1 = polarize(alpha1, beta1, G0)
+print(G1)
+print("Is G₁ compatible with (α₁, β₁)?", is_compatible(alpha1, beta1, G1))
+
+print()
+print("Polarize G₁ for (α₂, β₂). g₂ =")
+G2 = polarize(alpha2, beta2, G1)
+print(G2)
+print("Is G₂ compatible with (α₁, β₁)?", is_compatible(alpha1, beta1, G2))
+print("Is G₂ compatible with (α₂, β₂)?", is_compatible(alpha2, beta2, G2))
