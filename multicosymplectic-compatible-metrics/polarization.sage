@@ -56,3 +56,9 @@ def polarize(alpha, beta, g0):
     g = J.T * beta + alpha.T * alpha
     return g
 
+def print_structure(alpha, beta):
+    print("Cosymplectic structure:")
+    print("α = %s" % alpha)
+    print("β =")
+    print(beta)
+    print("R = %s" % Reeb_field(alpha, beta).T)
