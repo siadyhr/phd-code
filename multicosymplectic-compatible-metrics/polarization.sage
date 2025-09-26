@@ -16,3 +16,17 @@ def is_compatible(alpha, beta, g):
                 R.T * g * R == 1
             )
     )
+
+def diagonalize(A):
+    eigendata = A.eigenvectors_right()
+    eigenvectors = []
+    eigenvalues = []
+    for (eigenvalue, eigenvector_list, multiplicity) in eigendata:
+        for _ in range(multiplicity):
+            eigenvalues.append(eigenvalue)
+        for eigenvector in eigenvector_list:
+            eigenvectors.append(eigenvector)
+    D = diagonal_matrix(eigenvalues)
+    V = matrix(eigenvectors)
+    return (D, V)
+
