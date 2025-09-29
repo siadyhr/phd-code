@@ -62,28 +62,74 @@ def is_compatible(alpha, beta, g):
             )
     )
 
-def diagonalize(A):
-    eigendata = A.eigenvectors_right()
-    eigenvectors = []
-    eigenvalues = []
-    for (eigenvalue, eigenvector_list, multiplicity) in eigendata:
-        for _ in range(multiplicity):
-            eigenvalues.append(eigenvalue)
-        for eigenvector in eigenvector_list:
-            eigenvectors.append(eigenvector)
-    D = diagonal_matrix(eigenvalues)
-    V = matrix(eigenvectors)
+def diagonalize(A, mode="exact"):
+#    print("Begin diagonalization, mode %s" % mode)
+    if mode == "numpy":
+        eigendata = np.linalg.eig(A)
+#        D = diagonal_matrix(np.round(eigendata[0], 16))
+        D = diagonal_matrix(eigendata[0])
+        V = matrix(eigendata[1].tolist())
+#        print("D")
+#        print(D)
+#        print("V")
+#        print(V)
+#        print("1/V")
+#        print(1/V)
+#        print("Residuals")
+#        print((1/V) * D * V - A)
+    elif mode == "exact":
+        eigendata = A.eigenvectors_right()
+        eigenvectors = []
+        eigenvalues = []
+        for (eigenvalue, eigenvector_list, multiplicity) in eigendata:
+            for _ in range(multiplicity):
+                eigenvalues.append(eigenvalue)
+            for eigenvector in eigenvector_list:
+                eigenvectors.append(eigenvector)
+        D = diagonal_matrix(eigenvalues)
+        V = matrix(eigenvectors)
     return (D, V)
 
-def inverse_square_root(A):
-    D, V = diagonalize(A)
-    Dsqrt = diagonal_matrix(
-            x**(-1/2) if x != 0 else 0
-            for x in D.diagonal()
-    )
-    return (1/V) * Dsqrt * V
+def inverse_square_root(A, mode="exact"):
+#    print("Inverse square root? (mode %s)" % mode)
+    if mode in ["exact", "numpy"]:
+#        print(A.eigenvalues())
+        D, V = diagonalize(A, mode)
+#        print("Got eigenvalues")
+#        print(D.diagonal())
+        Dsqrt = diagonal_matrix(
+                x**(-1/2) if abs(x) > min(map(abs, D.diagonal())) else 0
+                for x in D.diagonal()
+        )
+#        print("Residuals of square root")
+        result = V * Dsqrt * (1/V)
+#        print()
+        res = result**2*A - identity_matrix(5)
+#        print(res)
+#        print("Σ =", norm(res))
+        return result
+    elif mode == "scipy":
+#        print("Matrix = ")
+#        print(np.array(A))
+#        print("Eigenvalues:")
+#        print(A.eigenvalues())
+        print([x**(0.5) for x in A.eigenvalues()])
+        # This cannot work since sqrt(A) should not be invertible...
+        # (-> numerical errors)
+#        result = np.linalg.inv(scipy.linalg.sqrtm(np.array(A)))
+        result = scipy.linalg.sqrtm(scipy.linalg.pinv(A))
+        print("Inverse square root = ")
+        print(result)
+#        print("Eigenvalues of it")
+#        print(matrix(result).eigenvalues())
+#        print("Residuals =")
+        result = matrix(result)
+        res = (result**2) * A - identity_matrix(5)
+#        print(res)
+#        print("Σ =", norm(res))
+        return result
 
-def polarize(alpha, beta, g0):
+def polarize(alpha, beta, g0, mode="exact"):
     """
     Mathematical procedure:
         beta = g0(-, A -)
