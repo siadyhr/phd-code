@@ -1,3 +1,5 @@
+import numpy as np
+import scipy
 # Standard form
 # alpha = dx^5
 # kerne er <d/dx^1, ..., d/dx^4>
