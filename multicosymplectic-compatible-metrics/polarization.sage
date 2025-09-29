@@ -21,7 +21,8 @@ beta2 = matrix([
 ])
 alpha2 = matrix([1,1,0,0,0])
 
-G0 = diagonal_matrix([2,1,1,1,1])
+#G0 = diagonal_matrix([2,1,1,1,1])
+G0 = random_matrix(QQ, 5)
 
 def Reeb_field(alpha, beta):
     R = beta.kernel().basis()[0]    # is vector
@@ -47,9 +48,11 @@ def is_compatible(alpha, beta, g):
     assert (beta.kernel().dimension() == 1), "dim(ker beta) ≠ 1"
     phi_candidate = g^(-1) * beta
     R = Reeb_field(alpha, beta)
-#    print("φ² = ")
-#    print(phi_candidate**2)
-#    print("|R|^2 =",(R.T * g * R)[0,0])
+    print("Checking compatibility...")
+    print("φ² - (-1 + R×α) = ")
+    print(phi_candidate**2 + identity_matrix(beta.dimensions()[0]) - R * alpha)
+    print("|R|^2 =",(R.T * g * R)[0,0])
+    print(R * alpha)
     return (
             (
                 phi_candidate**2
@@ -135,9 +138,14 @@ def polarize(alpha, beta, g0, mode="exact"):
         beta = g0(-, A -)
     """
 
+#    print("Begin polarizing")
+#    print("Calculate A")
     A = g0^(-1) * beta
-    J = (inverse_square_root(A * A.T)) * A
+#    print("Calculate J")
+    J = (inverse_square_root(A * A.T, mode)) * A
+#    print("Calculate g")
     g = J.T * beta + alpha.T * alpha
+#    print("Done polarizing")
     return g
 
 def print_structure(alpha, beta):
@@ -149,17 +157,21 @@ def print_structure(alpha, beta):
 
 print("Structure 1")
 print_structure(alpha1, beta1)
+print("Is cosymplectic?", is_cosymplectic(alpha1, beta1))
+
 print("Structure 2")
 print_structure(alpha2, beta2)
+print("Is cosymplectic?", is_cosymplectic(alpha2, beta2))
 
 print("is α_i(R_j) = δ_ij?")
 print(alpha2 * Reeb_field(alpha1, beta1))
 print(alpha1 * Reeb_field(alpha2, beta2))
 
 print("Is G₀ compatible with (α₁, β₁)?", is_compatible(alpha1, beta1, G0))
-G1 = polarize(alpha1, beta1, G0)
+G1 = polarize(alpha1, beta1, G0, "numpy")
 print(G1)
 print("Is G₁ compatible with (α₁, β₁)?", is_compatible(alpha1, beta1, G1))
+quit()
 
 print()
 print("Polarize G₁ for (α₂, β₂). g₂ =")
