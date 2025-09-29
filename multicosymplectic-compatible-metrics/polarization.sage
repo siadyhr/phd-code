@@ -29,6 +29,19 @@ def Reeb_field(alpha, beta):
     R /= (alpha * R)
     return R
 
+def is_cosymplectic(alpha, beta):
+    return (
+            (beta == -beta.T)
+            and
+            (beta.nullity() == 1)
+            and
+            (
+                (alpha * (beta.kernel().basis()[0]))[0]
+                !=
+                0
+            )
+            )
+
 def is_compatible(alpha, beta, g):
     assert (beta + beta.T == 0), "beta is not antisymmetric"
     assert (beta.kernel().dimension() == 1), "dim(ker beta) ≠ 1"
