@@ -101,7 +101,7 @@ def check_critical(L, alpha, beta, phi, g, R):
             assert LHS == RHS, "g is not critical"
     print("g is critical!")
 
-def 5D_jordan_form():
+def Jordan_form_5d():
     """The (potentially) simplest example with ad_R
     _not_ diagonalizable: ad_R has two generalized
     eigenspaces, each of dimension two on which it acts
