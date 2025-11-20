@@ -32,7 +32,7 @@ def check_alpha_R_invariant(L, alpha, beta, phi, g, R_Liealg):
     """
     print("Checking if alpha is R-invariant...")
     for X in L.gens():
-        RX = L.bracket(R, X).to_vector()
+        RX = L.bracket(R_Liealg, X).to_vector()
         assert (alpha * RX) == 0
     print("alpha is R-invariant!")
 
