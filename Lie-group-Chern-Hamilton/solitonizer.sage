@@ -187,6 +187,9 @@ def soliton_equations(Lie_alg, g):
                     if subeq == 0:
                         continue
                     print("\t", subeq)
+                    # Too substitute variables with values,
+                    # use .substitute, e.g.
+#                    print("\t", subeq.substitute({m2 : 0}))
                     print("\t <=>", solve(subeq==0, C)[0])
 
 # Model Lie algebras as defined in
