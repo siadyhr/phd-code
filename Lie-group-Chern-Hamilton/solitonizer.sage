@@ -135,3 +135,28 @@ def Riem_constructor(Lie_algebra, g):
         # The checks `if xi != 0` etc. avoids
         # unnecessary calls to Riem_coeff
     return Riem
+
+def Ricci_constructor2(Lie_alg, g):
+    """Compute the 2-Ricci tensor on
+    elements from `Lie_alg`
+    """
+    Riem = Riem_constructor(Lie_alg, g)
+    def Ricci2(X, Y):
+        return sum(
+                Riem(ek, X, Y, ek)/g[k,k]
+                for k, ek in enumerate(Lie_alg.basis())
+                )
+    return Ricci2
+
+def Ricci_constructor11(Lie_alg, g):
+    """Compute the (1, 1)-Ricci tensor on
+    elements from `Lie_alg`
+    """
+    Ric2 = Ricci_constructor2(Lie_alg, g)
+    @functools.cache
+    def Ricci11(X):
+        return sum(
+                (1/g[j,j]) * Ric2(X, ej) * ej
+                for j, ej in enumerate(Lie_alg.basis())
+                )
+    return Ricci11
