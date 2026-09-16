@@ -27,7 +27,7 @@ def Riem_constructor(Lie_algebra, g):
     Christoffel : function
         (i, j, k) -> Gamma_ij^k
         Needs `Lie_algebra.basis()` to be orthogonal
-        wrt `g` to work
+        wrt `g` to work. 0-indexed
 
     c : function
         (i, j, k) -> c_ij^k
@@ -99,11 +99,41 @@ def Riem_constructor(Lie_algebra, g):
     def Riem_coeff(i, j, k, l):
         """Calculate components of the
         Riemannian 4-tensor in the basis
-        `Lie_algebra.basis()`
+        `Lie_algebra.basis()` as
+        R_ijkl = g(R(ei, ej)ek, el)
+            = g(
+                nabla_ei nabla_ej ek
+                -
+                nabla_ej nabla_ei ek
+                -
+                nabla_[ei, ej] ek
+                ,
+                el
+                )
+            = g(
+                nabla_ei Gamma_jk^m em
+                -
+                nabla_ej Gamma_ik^m em
+                -
+                nabla_(c_ij^m em) ek
+                ,
+                el
+            )
+            =
+            g_nl(
+                Gamma_im^n Gamma_jk^m
+                -
+                Gamma_jm^n Gamma_ik^m
+                -
+                Gamma_mk^n c_ij^m
+            )
+        Uses that Gamma_ij^k is invariant
+        since the metric is
+        -> nabla_ei(Gamma_jk^l) = 0
         """
         return sum(
             sum(
-                g[l, m] * (
+                g[l, n] * (
                     Christoffel(j, k, m) * Christoffel(i, m, n)
                     -
                     Christoffel(i, k, m) * Christoffel(j, m, n)
@@ -132,32 +162,42 @@ def Riem_constructor(Lie_algebra, g):
                 )
                 for l, wl in enumerate(W.to_vector()) if wl != 0
             )
-        # The checks `if xi != 0` etc. avoids
+        # The checks `if xi != 0` etc. avoid
         # unnecessary calls to Riem_coeff
     return Riem
 
 def Ricci_constructor2(Lie_alg, g):
     """Compute the 2-Ricci tensor on
-    elements from `Lie_alg`
+    elements from `Lie_alg`.
+
+    Ricci(X, Y) = sum_ei g(R(ei, X)Y, ei)
+    for ei orthonormal. With ei orthogonal
+    it is necessary to scale by 1/g(ei, ei)
     """
     Riem = Riem_constructor(Lie_alg, g)
     def Ricci2(X, Y):
         return sum(
-                Riem(ek, X, Y, ek)/g[k,k]
-                for k, ek in enumerate(Lie_alg.basis())
+                Riem(ei, X, Y, ei)/g[i,i]
+                for i, ei in enumerate(Lie_alg.basis())
                 )
     return Ricci2
 
 def Ricci_constructor11(Lie_alg, g):
     """Compute the (1, 1)-Ricci tensor on
-    elements from `Lie_alg`
+    elements from `Lie_alg`.
+
+    Given as g(Ric11(X), Y) = Ric2(X, Y),
+    or in an ONB as
+    Ric11(X) = sum_ei Ric2(X, ei) ei
+
+    For an orthogonal base, scale by 1/g(ei, ei)
     """
     Ric2 = Ricci_constructor2(Lie_alg, g)
     @functools.cache
     def Ricci11(X):
         return sum(
-                (1/g[j,j]) * Ric2(X, ej) * ej
-                for j, ej in enumerate(Lie_alg.basis())
+                (1/g[i,i]) * Ric2(X, ei) * ei
+                for i, ei in enumerate(Lie_alg.basis())
                 )
     return Ricci11
 
