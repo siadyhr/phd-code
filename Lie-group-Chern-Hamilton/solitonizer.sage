@@ -160,3 +160,40 @@ def Ricci_constructor11(Lie_alg, g):
                 for j, ej in enumerate(Lie_alg.basis())
                 )
     return Ricci11
+
+def soliton_equations(Lie_alg, g):
+    """ (Lie_alg, g) is a Ricci-soliton
+    <=>
+    There exists a constant C
+    st. T is a derivation
+    """
+    var('C')
+    Ric11 = Ricci_constructor11(Lie_alg, g)
+    def T(X):
+        return Ric11(X) - C*X
+
+    for ei in L.basis():
+        for ej in L.basis():
+            # eq vanishes for all ei, ej <=> T is a derivation
+            eq = T(ei.bracket(ej)) - (T(ei)).bracket(ej) - ei.bracket(T(ej))
+            if eq != 0:
+                print("Check (%s, %s) non-trivial:" % (ei, ej))
+                print(eq)
+                print("Non-trivial component equations:")
+                for subeq in eq.to_vector():
+                    # eq is a vector equation; split
+                    # into one equation for each
+                    # component
+                    if subeq == 0:
+                        continue
+                    print("\t", subeq)
+                    print("\t <=>", solve(subeq==0, C)[0])
+
+# Model Lie algebras as defined in
+# `LieAlgebraBasisChange.sage`
+model_id = 0
+L = LieAlgebra(SR,
+               'e1,e2,e3,e4,e5',
+               structure_coefficients[models[model_id]]
+           )
+soliton_equations(L, metrics[models[model_id]])
