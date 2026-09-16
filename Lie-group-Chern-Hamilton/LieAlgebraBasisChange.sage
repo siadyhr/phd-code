@@ -18,6 +18,13 @@ L : g -> h, where
     - bracket [f_i, f_j] := [L e_i, L e_j]
 one should instead use L^{-1}
 
+Usage
+-----
+    Call `converter` on one of the models
+    in `models`.
+    Eg. `converter(models[0])` to compute
+    the results of the basis change for
+    the model `abelian-lambda1=0`
 """
 var('l l1 l2 m2 m3 a b c bp bm')
 
@@ -119,10 +126,10 @@ basis_changes = {
             [0, 0, 0, 0,    1/l]
         ]),
         'non-cosymplectic-lambda1=0' : matrix([
-            [0,     0,              0,          l,      0],         # R2
-            [0,     1/(l*a),        0,          0,      0],         # v+
-            [0,     0,              1,          0,      0],         # v-
-            [0,     0,              0,          0,      l],         # R3
+            [0,     0,              0,          l,      0],     # R2
+            [0,     1/(l*a),        0,          0,      0],     # v+
+            [0,     0,              1,          0,      0],     # v-
+            [0,     0,              0,          0,      l],     # R3
             [1/l,   0,              0,          -m2,  -m3],     # R
 
             # Cols: (sl 2) + R^2
@@ -162,11 +169,14 @@ def converter(model):
     print(basis_change)
     print("Basis change inverse:")
     print(1/basis_change)
+
+    # New basis, as elements of `lie_algebra`
     fs = [
             lie_algebra.from_vector(basis_change * ei.to_vector())
             for ei in lie_algebra.basis()
         ]
     print(fs)
+
     new_lie_algebra = LieAlgebra(SR, 'f1,f2,f3,f4,f5',
         {
             ('f%s' % i, 'f%s' % j) : dict(zip(
@@ -188,7 +198,7 @@ def converter(model):
     print("Cosymplectic 1-form in the new basis:")
     cosymplectic_1_form_matrix = basis_change[4,:][0]
     print(" + ".join(
-        "%s e^%s" % (a, i+1)
+        "%s f^%s" % (a, i+1)
         for i, a in enumerate(cosymplectic_1_form_matrix)
         if a != 0
         ))
@@ -216,9 +226,14 @@ def converter(model):
             basis_change
         )
     #print(cosymplectic_2_form_matrix)
+
+    # Entry (i, j) of `cosymplectic_2_form_matrix`
+    # is the coefficient to e^i \wedge e^j of th
+    # (up to matrices being 0-indexed and our
+    # basis fi being 1-indexed)
     print(" + ".join(
         [
-            "%s e^%s%s" % (a_ij, i+1, j+1)
+            "%s f^%s%s" % (a_ij, i+1, j+1)
             for i, row in enumerate(cosymplectic_2_form_matrix)
             for j, a_ij in enumerate(row[i+1:], i+1) if a_ij != 0
         ]
@@ -233,12 +248,4 @@ models = [
         'non-cosymplectic-lambda1=0',
         'non-cosymplectic-lambda1!=0'
         ]
-for L in basis_changes.items():
-    break
-    print(L[0])
-    print(L[1])
-    print()
-    print(1/L[1])
-    print()
-
 converter(models[0])
