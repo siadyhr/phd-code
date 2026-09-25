@@ -32,7 +32,7 @@ def check_alpha_R_invariant(L, alpha, beta, phi, g, R_Liealg):
     """
     print("Checking if alpha is R-invariant...")
     for X in L.gens():
-        RX = L.bracket(R, X).to_vector()
+        RX = L.bracket(R_Liealg, X).to_vector()
         assert (alpha * RX) == 0
     print("alpha is R-invariant!")
 
@@ -58,6 +58,22 @@ def check_beta_R_invariant(L, alpha, beta, phi, g, R):
 
 def check_critical(L, alpha, beta, phi, g, R):
     print("Checking if g is critical...")
+    def h(X):
+        return (1/2) * (
+                L.bracket(R, L.from_vector(phi * X.to_vector()))
+                -
+                L.from_vector(phi * L.bracket(R, X).to_vector())
+            )
+    for X in L.gens():
+        LHS = L.bracket(
+                R, 
+                h(L.from_vector(phi * X.to_vector()))
+            )
+        RHS = h(L.from_vector(phi * L.bracket(R, X).to_vector()))
+        assert LHS == RHS, "g is not critical"
+    print("g is critical")
+    return 1
+    # Old (wrong) check
     for X in L.gens():
         for Y in L.gens():
             if debug:
