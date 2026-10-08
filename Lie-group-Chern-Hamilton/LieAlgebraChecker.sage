@@ -158,8 +158,15 @@ def Jordan_form_5d():
                         ('R', 'v2') : {'v2' : mu},
                         ('R', 'w1') : {'w1' : -mu},
                         ('R', 'w2') : {'w1' : -epsilon, 'w2' : -mu},
+                        ('R', 'w2') : {'w2' : -mu},
                     },
-                   )
+                    )
+    R, v1, v2, w1, w2 = L.gens()
+
+    check_alpha_R_invariant(L, alpha, beta, phi, g, R)
+    check_beta_R_invariant(L, alpha, beta, phi, g, R)
+    check_critical(L, alpha, beta, phi, g, R)
+
     R, v1, v2, w1, w2 = L.gens()
 
     check_alpha_R_invariant(L, alpha, beta, phi, g, R)
