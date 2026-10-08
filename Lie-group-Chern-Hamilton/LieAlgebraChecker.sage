@@ -160,7 +160,8 @@ def Jordan_form_5d():
                         ('R', 'w2') : {'w1' : -epsilon, 'w2' : -mu},
                         ('R', 'w2') : {'w2' : -mu},
                     },
-                    )
+               )
+    TestSuite(L).run()
     R, v1, v2, w1, w2 = L.gens()
 
     check_alpha_R_invariant(L, alpha, beta, phi, g, R)
