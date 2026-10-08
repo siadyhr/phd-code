@@ -15,3 +15,9 @@ def Veff_constructor(mu):
 var('mu c x y q0')
 
 Veff = Veff_constructor(mu)
+
+print(
+        (
+            diff(Veff, x)(x=q0, y=0) #*(x-q0) + diff(Veff, y)*y
+        )
+    )
