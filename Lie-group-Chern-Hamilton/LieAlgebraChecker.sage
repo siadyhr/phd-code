@@ -58,18 +58,29 @@ def check_beta_R_invariant(L, alpha, beta, phi, g, R):
 
 def check_critical(L, alpha, beta, phi, g, R):
     print("Checking if g is critical...")
-    def h(X):
-        return (1/2) * (
-                L.bracket(R, L.from_vector(phi * X.to_vector()))
-                -
-                L.from_vector(phi * L.bracket(R, X).to_vector())
-            )
+    """Critical is equivalent to
+    (ad_R phi)^2 = (phi ad_R)^2
+    """
     for X in L.gens():
-        LHS = L.bracket(
-                R, 
-                h(L.from_vector(phi * X.to_vector()))
+        # LHS = (ad_R phi) X
+        LHS = L.bracket(R,
+            L.from_vector(phi * 
+                L.bracket(R,
+                    L.from_vector(
+                        phi * X.to_vector()
+                    )
+                ).to_vector()
             )
-        RHS = h(L.from_vector(phi * L.bracket(R, X).to_vector()))
+        )
+        # RHS = (phi ad_R) X
+        RHS = L.from_vector(phi * 
+            L.bracket(
+                R,
+                L.from_vector(
+                    phi * L.bracket(R, X).to_vector()
+                )
+            ).to_vector()
+        )
         assert LHS == RHS, "g is not critical"
     print("g is critical")
     return 1
@@ -144,16 +155,47 @@ def Jordan_form_5d():
                     {
                         ('R', 'v1') : {'v1' : mu},
                         ('R', 'v2') : {'v1' : epsilon, 'v2' : mu},
-    #                    ('R', 'v2') : {'v2' : mu},
+                        ('R', 'v2') : {'v2' : mu},
                         ('R', 'w1') : {'w1' : -mu},
                         ('R', 'w2') : {'w1' : -epsilon, 'w2' : -mu},
-    #                    ('R', 'w2') : {'w2' : -mu},
+                        ('R', 'w2') : {'w2' : -mu},
                     },
-                   )
-
+               )
     TestSuite(L).run()
     R, v1, v2, w1, w2 = L.gens()
 
     check_alpha_R_invariant(L, alpha, beta, phi, g, R)
     check_beta_R_invariant(L, alpha, beta, phi, g, R)
     check_critical(L, alpha, beta, phi, g, R)
+
+def double_eigenvalue_5d():
+    alpha = matrix([1, 0, 0, 0, 0])
+    g = identity_matrix(5)
+    phi = matrix([
+        [ 0, 0, 0, 0, 0],
+        [ 0, 0, 0,-1, 0],
+        [ 0, 0, 0, 0,-1],
+        [ 0, 1, 0, 0, 0],
+        [ 0, 0, 1, 0, 0]
+        ])
+    beta = g * phi
+    check_compatible_structure(alpha, beta, phi, g)
+    var('mu')
+    L = LieAlgebra(SR,
+                    'R,v1,v2,w1,w2',
+                    #v_i <-> +mu
+                    #w_i <-> -mu
+                    {
+                        ('R', 'v1') : {'v1' : mu},
+                        ('R', 'v2') : {'v2' : mu},
+                        ('R', 'w1') : {'w1' : -mu},
+                        ('R', 'w2') : {'w2' : -mu},
+                    },
+                    )
+    R, v1, v2, w1, w2 = L.gens()
+
+    check_alpha_R_invariant(L, alpha, beta, phi, g, R)
+    check_beta_R_invariant(L, alpha, beta, phi, g, R)
+    check_critical(L, alpha, beta, phi, g, R)
+double_eigenvalue_5d()
+#Jordan_form_5d()

@@ -1,7 +1,7 @@
 generators = ", ".join("e%s" % i for i in range(1, 4))
 structure_coefficients = {
-	('e1', 'e2') : {'e2' : 1},
-	('e1', 'e3') : {'e3' : -1},
+    ('e1', 'e2') : {'e2' : 1},
+    ('e1', 'e3') : {'e3' : -1},
 }
 
 # Create Lie algebra over QQ with generators given labels
@@ -22,16 +22,16 @@ print(generators)
 def ad_e(i):
     """Return a metrix representing
     ad(generators[i])"""
-	out = matrix(len(generators), len(generators))
-	for j in range(len(generators)):
-		for k in range(len(generators)):
-#			print(lie_algebra([generators[i], generators[j]]))
+    out = matrix(len(generators), len(generators))
+    for j in range(len(generators)):
+        for k in range(len(generators)):
+#           print(lie_algebra([generators[i], generators[j]]))
             # The (expression)[key] gives the coefficient to the
             # Lie algebra element key
-			out[j,k] = (lie_algebra([generators[i], generators[j]])[
-				lie_algebra.basis().keys()[k]
-			])
-	return out)
+            out[j,k] = (lie_algebra([generators[i], generators[j]])[
+                lie_algebra.basis().keys()[k]
+            ])
+    return out
 
 # Try creating the matrix representing ad(R). Can we calculate
 # if its range is consistent with what it should be?
