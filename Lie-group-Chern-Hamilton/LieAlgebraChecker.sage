@@ -155,10 +155,9 @@ def Jordan_form_5d():
                     {
                         ('R', 'v1') : {'v1' : mu},
                         ('R', 'v2') : {'v1' : epsilon, 'v2' : mu},
-    #                    ('R', 'v2') : {'v2' : mu},
+                        ('R', 'v2') : {'v2' : mu},
                         ('R', 'w1') : {'w1' : -mu},
                         ('R', 'w2') : {'w1' : -epsilon, 'w2' : -mu},
-    #                    ('R', 'w2') : {'w2' : -mu},
                     },
                    )
     R, v1, v2, w1, w2 = L.gens()
