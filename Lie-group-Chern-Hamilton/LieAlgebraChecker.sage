@@ -58,18 +58,29 @@ def check_beta_R_invariant(L, alpha, beta, phi, g, R):
 
 def check_critical(L, alpha, beta, phi, g, R):
     print("Checking if g is critical...")
-    def h(X):
-        return (1/2) * (
-                L.bracket(R, L.from_vector(phi * X.to_vector()))
-                -
-                L.from_vector(phi * L.bracket(R, X).to_vector())
-            )
+    """Critical is equivalent to
+    (ad_R phi)^2 = (phi ad_R)^2
+    """
     for X in L.gens():
-        LHS = L.bracket(
-                R, 
-                h(L.from_vector(phi * X.to_vector()))
+        # LHS = (ad_R phi) X
+        LHS = L.bracket(R,
+            L.from_vector(phi * 
+                L.bracket(R,
+                    L.from_vector(
+                        phi * X.to_vector()
+                    )
+                ).to_vector()
             )
-        RHS = h(L.from_vector(phi * L.bracket(R, X).to_vector()))
+        )
+        # RHS = (phi ad_R) X
+        RHS = L.from_vector(phi * 
+            L.bracket(
+                R,
+                L.from_vector(
+                    phi * L.bracket(R, X).to_vector()
+                )
+            ).to_vector()
+        )
         assert LHS == RHS, "g is not critical"
     print("g is critical")
     return 1
